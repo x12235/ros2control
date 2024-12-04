@@ -60,7 +60,7 @@
         rpy="0 0 0" />
         <!--Filepath to STL visual Mesh file-->
       <geometry>
-        <mesh filename="package://meshes/visual/base_link.stl"/>
+        <mesh filename="package://turtle/meshes/visual/base_link.STL"/>
       </geometry>
       <material
         name="">
@@ -68,7 +68,7 @@
         <color 
           rgba="0 1 0 1" />
       </material>
-    </visual>s
+    </visual>
     <!--Collision parameter for Link-->
     <collision>
       <origin
@@ -77,7 +77,7 @@
         <!--Filepath to STL visual Mesh file-->
       <geometry>
         <mesh
-          filename="package://meshes/visual/base_link.stl" />
+          filename="package://turtle/meshes/visual/base_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -107,7 +107,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://meshes/visual/Front_right1.stl" />
+          filename="package://turtle/meshes/visual/Front_right1.STL" />
       </geometry>
       <material
         name="">
@@ -121,7 +121,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://meshes/visual/Front_right1.stl" />
+          filename="package://turtle/meshes/visual/Front_right1.STL" />
       </geometry>
     </collision>
   </link>
@@ -170,7 +170,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://meshes/visual/Front_right2.stl" />
+          filename="package://turtle/meshes/visual/Front_right2.STL" />
       </geometry>
       <material
         name="">
@@ -184,7 +184,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://meshes/visual/Front_right2.stl" />
+          filename="package://turtle/meshes/visual/Front_right2.STL" />
       </geometry>
     </collision>
   </link>
@@ -233,7 +233,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://meshes/visual/Back_right1.stl" />
+          filename="package://turtle/meshes/visual/Back_right1.STL" />
       </geometry>
       <material
         name="">
@@ -247,7 +247,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://meshes/visual/Back_right1.stl" />
+          filename="package://turtle/meshes/visual/Back_right1.STL" />
       </geometry>
     </collision>
   </link>
@@ -296,7 +296,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://meshes/visual/Back_right2.stl" />
+          filename="package://turtle/meshes/visual/Back_right2.STL" />
       </geometry>
       <material
         name="">
@@ -310,7 +310,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://meshes/visual/Back_right2.stl" />
+          filename="package://turtle/meshes/visual/Back_right2.STL" />
       </geometry>
     </collision>
   </link>
@@ -359,7 +359,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://meshes/visual/Front_left1.stl" />
+          filename="package://turtle/meshes/visual/Front_left1.STL" />
       </geometry>
       <material
         name="">
@@ -373,7 +373,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://meshes/visual/Front_left1.stl" />
+          filename="package://turtle/meshes/visual/Front_left1.STL" />
       </geometry>
     </collision>
   </link>
@@ -392,8 +392,8 @@
     <axis
       xyz="0 0 -1" />
     <limit
-      lower="-0.7854"
-      upper="0.7854"
+      lower="-0.6854"
+      upper="0.6854"
       effort="2"
       velocity="5" />
     <dynamics damping="0.1" friction="0.1"/>
@@ -422,7 +422,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://meshes/visual/Front_left2.stl" />
+          filename="package://turtle/meshes/visual/Front_left2.STL" />
       </geometry>
       <material
         name="">
@@ -436,7 +436,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://meshes/visual/Front_left2.stl" />
+          filename="package://turtle/meshes/visual/Front_left2.STL" />
       </geometry>
     </collision>
   </link>
@@ -485,7 +485,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://meshes/visual/Back_left1.stl" />
+          filename="package://turtle/meshes/visual/Back_left1.STL" />
       </geometry>
       <material
         name="">
@@ -499,7 +499,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://meshes/visual/Back_left1.stl" />
+          filename="package://turtle/meshes/visual/Back_left1.STL" />
       </geometry>
     </collision>
   </link>
@@ -548,7 +548,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://meshes/visual/Back_left2.stl" />
+          filename="package://turtle/meshes/visual/Back_left2.STL" />
       </geometry>
       <material
         name="">
@@ -562,7 +562,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://meshes/visual/Back_left2.stl" />
+          filename="package://turtle/meshes/visual/Back_left2.STL" />
       </geometry>
     </collision>
   </link>
@@ -587,5 +587,43 @@
       velocity="5" />
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
+
+  <link
+    name="Sensor_link">
+    <inertial>
+      <origin
+        xyz="-2.25214372452731E-05 0.103607028948444 -0.00174327710854269"
+        rpy="0 0 0" />
+      <mass
+        value="0.656382274118652" />
+      <inertia
+        ixx="0.00398589796619268"
+        ixy="6.81523498247126E-07"
+        ixz="7.5942173311683E-08"
+        iyy="0.00261594481266056"
+        iyz="4.49451871288875E-05"
+        izz="0.00597901119561345" />
+    </inertial>
+    
+  </link>
+
+  <joint
+    name="sensor"
+    type="fixed">
+    <origin
+      xyz="0.0975 0 0.005"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Sensor_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+  <plugin name="lidar" filename="libgazebo_ros_ray_sensor.so">
+    <output_type>sensor_msgs/LaserScan</output_type>
+  </plugin>
+
 
 </robot>
