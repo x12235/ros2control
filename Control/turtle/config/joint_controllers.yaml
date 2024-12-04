@@ -11,10 +11,14 @@ controller_manager:
 joint_vel:
   ros__parameters:
     joints:
-      - Back_left2_joint
-      - Back_right2_joint
-      - Front_left2_joint
+      - Front_right1_joint
       - Front_right2_joint
+      - Front_left1_joint
+      - Front_left2_joint
+      - Back_right1_joint
+      - Back_right2_joint
+      - Back_left1_joint
+      - Back_left2_joint
     command_interfaces:
       - velocity
 
@@ -22,4 +26,11 @@ joint_vel:
       - position
       - velocity
       - effort
-    
+
+odometry_publisher:
+  ros__parameters:
+   odom_topic: /odom
+   enable_odom_tf: true
+   odom_frame_id: odom
+   base_frame_id: base_link
+   publishe_rate: 50
