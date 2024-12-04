@@ -1,7 +1,8 @@
 import os
 import xacro
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler, IncludeLaunchDescription, SetEnvironmentVariable, ExecuteProcess
+from pathlib import Path
+from launch.actions import DeclareLaunchArgument, RegisterEventHandler, IncludeLaunchDescription, SetEnvironmentVariable, ExecuteProcess, AppendEnvironmentVariable
 from launch.conditions import IfCondition, UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command, LaunchConfiguration, PythonExpression, PathJoinSubstitution, FindExecutable
@@ -18,6 +19,7 @@ def generate_launch_description():
     urdf_name='URDF1.urdf.xacro'
     urdf=os.path.join(get_package_share_directory('turtle'),'urdf',urdf_name)
     rviz_config_file='rviz/rviz_basic_settings.rviz'
+
 
     # Set paths to different files
     pkg_gazebo_ros = FindPackageShare(package='ros_gz_sim').find('ros_gz_sim')
@@ -37,6 +39,7 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         name='robot_state_publisher',
+        output='screen',
         parameters=[robot_description]
     )
 
@@ -82,17 +85,15 @@ def generate_launch_description():
     )
 
     # Set environment variable for GZ_SIM_RESOURCE_PATH
+    resource_path = get_package_share_directory('turtle')
     set_gz_sim_resource_path = SetEnvironmentVariable(
         name='GZ_SIM_RESOURCE_PATH',
-        value=resources
+        value=resource_path
     )
-    robot_controllers = PathJoinSubstitution(
-        [
-            FindPackageShare("turtle"),
-            "config",
-            "joint_controller.yaml",
-        ]
-    )
+
+    set_env_vars_resources2 = AppendEnvironmentVariable(
+            'GZ_SIM_RESOURCE_PATH',
+            str(Path(os.path.join(resource_path)).parent.resolve()))
 
     Velcoity_spawner = Node(
         package="controller_manager",
@@ -105,14 +106,53 @@ def generate_launch_description():
         executable="spawner",
         arguments=["joint_state_broadcaster"],
     )
+    
+
+    # Add the ros_gz_bridge node to bridge the joint states and commands
+    bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        name='ros_gz_bridge',
+        arguments=[
+            # Bridge joint states from ROS 2 to Gazebo transport
+            #'/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
+            
+            # Bridge velocity commands if controlling with velocity
+            #'/cmd_vel@geometry_msgs/msg/Twist[gz.msgs.Twist',
+            
+            '/lidar@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+            '/lidar/points@sensor_msgs/msg/PointCloud2@gz.msgs.PointCloudPacked',
+
+            '/camera1_image@sensor_msgs/msg/Image[gz.msgs.Image',
+
+            #'/camera1_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo',
+
+            '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
+
+            #'/model/robot1/pose@geometry_msgs/msg/Odometry[gz.msgs.Pose',
+
+            #'/joint_states@geometry_msgs/msg/Transform[gz.msgs.Pose',
+
+            '/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'
+            # {
+            #     'config_file': os.path.join(
+            #         get_package_share_directory('landTurtle2'), 'configs', 'landturtle_bridge.yaml'
+            #     ),
+            #     #'expand_gz_topic_names': True,
+            #     'use_sim_time': True,
+            # }
+        ],
+    )
      
     return LaunchDescription([
-        set_gz_sim_resource_path,
+        set_env_vars_resources2,
         joint_state_publisher_node,
         robot_state_publisher_node,
-        #launch_rviz_node,
+        launch_rviz_node,
         gz_sim,
         spawn_entity,
         Velcoity_spawner,
         joint_broad_spawner,
+        bridge,
+        
     ])
