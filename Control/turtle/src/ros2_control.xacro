@@ -9,8 +9,8 @@
        <!-- Joint 2: Front_right1_joint -->
       <joint name="Front_right1_joint">
         <command_interface name="velocity">
-          <param name="min">-2</param>
-          <param name="max">2</param>
+          <param name="min">-5</param>
+          <param name="max">5</param>
         </command_interface>
         <state_interface name="position">
           <param name="initial_value">0.0</param>
@@ -23,8 +23,8 @@
        <!-- Joint 3: Front_right2_joint -->
       <joint name="Front_right2_joint">
         <command_interface name="velocity">
-          <param name="min">-2</param>
-          <param name="max">2</param>
+          <param name="min">-5</param>
+          <param name="max">5</param>
         </command_interface>
         <state_interface name="position">
           <param name="initial_value">0.0</param>
@@ -36,8 +36,8 @@
        <!-- Joint 3: Back_right1_joint-->
       <joint name="Back_right1_joint">
         <command_interface name="velocity">
-          <param name="min">-2</param>
-          <param name="max">2</param>
+          <param name="min">-5</param>
+          <param name="max">5</param>
         </command_interface>
         <state_interface name="position">
           <param name="initial_value">0.0</param>
@@ -50,8 +50,8 @@
       <!-- Joint 5: Back_right2_joint -->
       <joint name="Back_right2_joint">
         <command_interface name="velocity">
-          <param name="min">-2</param>
-          <param name="max">2</param>
+          <param name="min">-5</param>
+          <param name="max">5</param>
         </command_interface>
         <state_interface name="position">
           <param name="initial_value">0.0</param>
@@ -63,8 +63,8 @@
       <!-- Joint 6: Front_left1_joint -->
       <joint name="Front_left1_joint">
         <command_interface name="velocity">
-          <param name="min">-2</param>
-          <param name="max">2</param>
+          <param name="min">-5</param>
+          <param name="max">5</param>
         </command_interface>
         <state_interface name="position">
           <param name="initial_value">0.0</param>
@@ -76,8 +76,8 @@
        <!-- Joint 7: Front_left2_joint -->
       <joint name="Front_left2_joint">
         <command_interface name="velocity">
-          <param name="min">-2</param>
-          <param name="max">2</param>
+          <param name="min">-5</param>
+          <param name="max">5</param>
         </command_interface>
         <state_interface name="position">
           <param name="initial_value">0.0</param>
@@ -89,8 +89,8 @@
        <!-- Joint 8: Back_left1_joint -->
       <joint name="Back_left1_joint">
         <command_interface name="velocity">
-          <param name="min">-2</param>
-          <param name="max">2</param>
+          <param name="min">-5</param>
+          <param name="max">5</param>
         </command_interface>
         <state_interface name="position">
           <param name="initial_value">0.0</param>
@@ -102,8 +102,8 @@
       <!-- Joint 9: Back_left2_joint -->
       <joint name="Back_left2_joint">
         <command_interface name="velocity">
-          <param name="min">-2</param>
-          <param name="max">2</param>
+          <param name="min">-5</param>
+          <param name="max">5</param>
         </command_interface>
         <state_interface name="position">
           <param name="initial_value">0.0</param>
@@ -120,5 +120,11 @@
         <parameters>$(find turtle)/config/joint_controllers.yaml</parameters>
       </plugin>
     </gazebo>
+
+    <plugin name="lidar" filename="libgazebo_ros_ray_sensor.so">
+      <output_type> sensor_msgs/LaserScan</output_type>
+    </plugin>
+
+   
 
 </robot>

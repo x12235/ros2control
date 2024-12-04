@@ -3,7 +3,10 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float64MultiArray
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist, TransformStamped
+from nav_msgs.msg import Odometry
+from tf2_ros import TransformBroadcaster
+import math
 
 
 class VelocityPublisher(Node):
@@ -20,12 +23,18 @@ class VelocityPublisher(Node):
             self.cmd_vel_callback,
             10
         )
-        # Joints Front_right1, Front_right2, Front_left1, Front_left2, Back_right1, Back_right2, Back_left1, Back_left2
+
+        # Publisher for the odometry topic
+        self.odom_publisher = self.create_publisher(Odometry, '/odom', 10)
+
+        # Transform broadcaster for odom to base_footprint
+        self.odom_broadcaster = TransformBroadcaster(self)
+
         # Predefined velocity patterns
         self.velocities = {
             'stop': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-            'straight_forward': [5.0, 5.0, 5.0, 5.0, 3.0, 0.0, 3.0, 0.0],  # Symmetric velocities for forward movement
-            'straight_reverse': [-4.0, -4.0, -4.0, -4.0, -3.0, 0.0, -3.0, 0.0],  # Symmetric velocities for reverse movement
+            'straight_forward': [5.0, 5.0, 5.0, 5.0, 3.0, 0.0, 3.0, 0.0],
+            'straight_reverse': [-4.0, -4.0, -4.0, -4.0, -3.0, 0.0, -3.0, 0.0],
             'left_forward': [4.0, 4.0, 3.0, 3.0, -3.0, -3.0, 3.0, 3.0],
             'left_reverse': [-4.0, -4.0, -3.0, -3.0, 3.0, 3.0, -3.0, -3.0],
             'right_forward': [3.0, 3.0, 4.0, 4.0, 3.0, 3.0, -3.0, -3.0],
@@ -38,8 +47,14 @@ class VelocityPublisher(Node):
         # State toggle for flipping effect
         self.toggle_state = True
 
-        # Timer to publish velocities
-        self.timer = self.create_timer(0.5, self.publish_velocity)  # Publish at 2 Hz
+        # Odometry variables
+        self.x = 0.0
+        self.y = 0.0
+        self.theta = 0.0
+        self.last_time = self.get_clock().now()
+
+        # Timer to publish velocities and compute odometry
+        self.timer = self.create_timer(0.5, self.update)  # Publish at 2 Hz
         self.get_logger().info('Velocity Publisher Node has started.')
 
     def cmd_vel_callback(self, msg):
@@ -61,11 +76,11 @@ class VelocityPublisher(Node):
 
         self.get_logger().info(f'Direction changed to: {self.direction}')
 
-    def publish_velocity(self):
-        """Publish velocities based on the current direction."""
+    def update(self):
+        """Publish velocities and compute odometry."""
+        # Publish velocity
         velocity_command = Float64MultiArray()
 
-        # Apply flipping effect for straight, left, and right directions
         if self.direction in ['straight_forward', 'straight_reverse']:
             if self.toggle_state:
                 velocity_command.data = self.velocities['straight_forward']
@@ -82,20 +97,58 @@ class VelocityPublisher(Node):
             else:
                 velocity_command.data = self.velocities['right_reverse']
         else:
-            # Default stop velocity
             velocity_command.data = self.velocities['stop']
 
-        # Toggle the state for the next cycle
         self.toggle_state = not self.toggle_state
-
-        # Publish the velocity command
-        self.get_logger().info(f'Publishing velocity command: {velocity_command.data}')
         self.publisher.publish(velocity_command)
+
+        # Compute odometry
+        current_time = self.get_clock().now()
+        dt = (current_time - self.last_time).nanoseconds / 1e9  # Convert nanoseconds to seconds
+
+        linear_velocity = 0.5 if self.direction.startswith('straight') else 0.0
+        angular_velocity = 0.1 if self.direction.startswith('left') else -0.1 if self.direction.startswith('right') else 0.0
+
+        delta_x = linear_velocity * math.cos(self.theta) * dt
+        delta_y = linear_velocity * math.sin(self.theta) * dt
+        delta_theta = angular_velocity * dt
+
+        self.x += delta_x
+        self.y += delta_y
+        self.theta += delta_theta
+
+        # Publish odometry
+        odom = Odometry()
+        odom.header.stamp = current_time.to_msg()
+        odom.header.frame_id = 'odom'
+        odom.child_frame_id = 'base_footprint'
+        odom.pose.pose.position.x = self.x
+        odom.pose.pose.position.y = self.y
+        odom.pose.pose.position.z = 0.0
+        odom.pose.pose.orientation.z = math.sin(self.theta / 2.0)
+        odom.pose.pose.orientation.w = math.cos(self.theta / 2.0)
+        odom.twist.twist.linear.x = linear_velocity
+        odom.twist.twist.angular.z = angular_velocity
+
+        self.odom_publisher.publish(odom)
+
+        # Broadcast transform
+        transform = TransformStamped()
+        transform.header.stamp = current_time.to_msg()
+        transform.header.frame_id = 'odom'
+        transform.child_frame_id = 'base_footprint'
+        transform.transform.translation.x = self.x
+        transform.transform.translation.y = self.y
+        transform.transform.translation.z = 0.0
+        transform.transform.rotation.z = math.sin(self.theta / 2.0)
+        transform.transform.rotation.w = math.cos(self.theta / 2.0)
+
+        self.odom_broadcaster.sendTransform(transform)
+        self.last_time = current_time
 
 
 def main(args=None):
     rclpy.init(args=args)
-
     velocity_publisher = VelocityPublisher()
 
     try:
