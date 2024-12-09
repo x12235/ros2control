@@ -2,8 +2,11 @@
 <!-- Turtle on land URDF file-->
 <robot name="URDF1" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <!-- Import diffbot ros2_control description -->
+  <!-- Import turtle ros2_control description -->
   <xacro:include filename="$(find turtle)/src/ros2_control.xacro" />
+
+  <!-- Import turtle gazebo lidar description -->
+  <xacro:include filename="$(find turtle)/gazebo/turtle.gazebo.xacro" />
   
   <!--Link1; Turtle Shell bottom-->
   <link name="base_footprint">
@@ -588,6 +591,7 @@
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
 
+<!--Sesnor_Link-->
   <link
     name="Sensor_link">
     <inertial>
@@ -605,8 +609,10 @@
         izz="0.00597901119561345" />
     </inertial>
     
+    
   </link>
 
+<!--Sensor_Joint-->
   <joint
     name="sensor"
     type="fixed">
@@ -621,9 +627,7 @@
       xyz="0 0 0" />
   </joint>
 
-  <plugin name="lidar" filename="libgazebo_ros_ray_sensor.so">
-    <output_type>sensor_msgs/LaserScan</output_type>
-  </plugin>
+  
 
 
 </robot>
