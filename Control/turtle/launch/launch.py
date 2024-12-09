@@ -2,7 +2,7 @@ import os
 import xacro
 from launch import LaunchDescription
 from pathlib import Path
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler, IncludeLaunchDescription, SetEnvironmentVariable, ExecuteProcess, AppendEnvironmentVariable
+from launch.actions import DeclareLaunchArgument, RegisterEventHandler, IncludeLaunchDescription, SetEnvironmentVariable, TimerAction
 from launch.conditions import IfCondition, UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command, LaunchConfiguration, PythonExpression, PathJoinSubstitution, FindExecutable
@@ -17,35 +17,63 @@ def generate_launch_description():
     models_path = 'meshes'
     package_name = 'turtle'
     urdf_name='URDF1.urdf.xacro'
-    urdf=os.path.join(get_package_share_directory('turtle'),'urdf',urdf_name)
+    urdf=os.path.join(get_package_share_directory(package_name),'urdf',urdf_name)
     rviz_config_file='rviz/rviz_basic_settings.rviz'
+    params_file = os.path.join(get_package_share_directory(package_name), 'config', 'mapper_params_online_async.yaml')
+
+
+    # SLAM Toolbox Node
+    slam_toolbox_node = Node(
+        package='slam_toolbox',
+        executable='async_slam_toolbox_node',
+        name='slam_toolbox',
+        output='screen',
+        parameters=[params_file],
+        remappings=[
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static')
+        ]
+    )
+
+    # Delay activation of SLAM toolbox to ensure all topics are available
+    delayed_slam_toolbox = TimerAction(
+        period=5.0,  # Delay in seconds
+        actions=[slam_toolbox_node]
+    )
 
 
     # Set paths to different files
-    pkg_gazebo_ros = FindPackageShare(package='ros_gz_sim').find('ros_gz_sim')
     pkg_share = FindPackageShare(package=package_name).find(package_name)
 
     gazebo_models_path = os.path.join(pkg_share,models_path)
     os.environ["GAZEBO_MODEL_PATH"] = gazebo_models_path
-    resources=os.path.join(get_package_share_directory('turtle'))
     rviz_config_path=os.path.join(pkg_share,rviz_config_file)
 
-    doc = xacro.process_file(urdf, mappings={'use_sim' : 'true'})
+    doc = xacro.process_file(urdf, mappings={'use_sim_time' : 'true'})
 
     robot_desc = doc.toprettyxml(indent='  ')
     robot_description = {"robot_description": robot_desc}
+
+    
     # Nodes
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
         name='robot_state_publisher',
         output='screen',
-        parameters=[robot_description]
+        parameters=[robot_description, {'use_sim_time': True}]
     )
 
     joint_state_publisher_node=Node(
         package='joint_state_publisher',
         executable='joint_state_publisher',
+        parameters=[{'use_sim_time': True}],
+    )
+
+    arguments = LaunchDescription([
+                DeclareLaunchArgument('world', default_value='fws_robot_world',
+                          description='Gz sim World'),
+           ]
     )
 
     # Launch RViz2
@@ -54,20 +82,32 @@ def generate_launch_description():
         executable='rviz2',
         name='rviz2',
         output='screen',
-        arguments=["-d", rviz_config_path]
+        arguments=["-d", rviz_config_path],
+        parameters=[{'use_sim_time': True}]
+    )
+    
+    #Velocity
+    velocity= Node(
+        package='turtle',
+        executable='publisher.py',
+        name='vel_publisher',
+        output='screen',
+        parameters=[{'use_sim_time': True}]
     )
 
     # Launch Gazebo simulator with an empty world
     gz_sim = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(
-                pkg_gazebo_ros,
-                "launch",
-                "gz_sim.launch.py",
-            )
-        ),
-        launch_arguments={"gz_args": "-r -v 4 empty.sdf"}.items(),
-    )
+                PythonLaunchDescriptionSource([os.path.join(
+                    get_package_share_directory('ros_gz_sim'), 'launch'), '/gz_sim.launch.py']),
+                launch_arguments=[
+                    ('gz_args', [LaunchConfiguration('world'),
+                                 '.sdf',
+                                 ' -v 4',
+                                 ' -r',]
+                    ),
+                    ('use_sim_time', 'true')
+                ]
+             )
 
     spawn_entity = Node(
         package='ros_gz_sim',
@@ -86,66 +126,43 @@ def generate_launch_description():
 
     # Set environment variable for GZ_SIM_RESOURCE_PATH
     resource_path = get_package_share_directory('turtle')
-    set_gz_sim_resource_path = SetEnvironmentVariable(
-        name='GZ_SIM_RESOURCE_PATH',
-        value=resource_path
-    )
+    
 
-    set_env_vars_resources2 = AppendEnvironmentVariable(
-            'GZ_SIM_RESOURCE_PATH',
-            str(Path(os.path.join(resource_path)).parent.resolve()))
+    # Set gazebo sim resource path
+    gazebo_resource_path = SetEnvironmentVariable(
+        name='GZ_SIM_RESOURCE_PATH',
+        value=[
+            os.path.join(resource_path, 'worlds'), ':' +
+            str(Path(resource_path).parent.resolve())
+            ]
+        )
 
     Velcoity_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=["joint_vel"],
+        parameters=[{'use_sim_time': True}],
     )
 
     joint_broad_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=["joint_state_broadcaster"],
+        parameters=[{'use_sim_time': True}],
     )
     
-
-    # Add the ros_gz_bridge node to bridge the joint states and commands
     bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
-        name='ros_gz_bridge',
-        arguments=[
-            # Bridge joint states from ROS 2 to Gazebo transport
-            #'/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
-            
-            # Bridge velocity commands if controlling with velocity
-            #'/cmd_vel@geometry_msgs/msg/Twist[gz.msgs.Twist',
-            
-            '/lidar@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
-            '/lidar/points@sensor_msgs/msg/PointCloud2@gz.msgs.PointCloudPacked',
-
-            '/camera1_image@sensor_msgs/msg/Image[gz.msgs.Image',
-
-            #'/camera1_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo',
-
-            '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
-
-            #'/model/robot1/pose@geometry_msgs/msg/Odometry[gz.msgs.Pose',
-
-            #'/joint_states@geometry_msgs/msg/Transform[gz.msgs.Pose',
-
-            '/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'
-            # {
-            #     'config_file': os.path.join(
-            #         get_package_share_directory('landTurtle2'), 'configs', 'landturtle_bridge.yaml'
-            #     ),
-            #     #'expand_gz_topic_names': True,
-            #     'use_sim_time': True,
-            # }
-        ],
+        arguments=['/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan'],
+        output='screen',
+        parameters=[{'use_sim_time': True}],
     )
-     
+    
     return LaunchDescription([
-        set_env_vars_resources2,
+        gazebo_resource_path,
+        arguments,
+        velocity,
         joint_state_publisher_node,
         robot_state_publisher_node,
         launch_rviz_node,
@@ -154,5 +171,6 @@ def generate_launch_description():
         Velcoity_spawner,
         joint_broad_spawner,
         bridge,
+        delayed_slam_toolbox,
         
     ])
