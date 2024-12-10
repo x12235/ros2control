@@ -22,9 +22,10 @@
   <exec_depend>rclcpp</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>control_msgs</exec_depend>
-  <exec_depend>controller_interface</exec_depend> <!-- Added for custom controllers -->
-  <exec_depend>robot_localization</exec_depend> <!-- Added for localization -->
-  <exec_depend>geometry_msgs</exec_depend> <!-- Added for geometric messages -->
+  <exec_depend>controller_interface</exec_depend> 
+  <exec_depend>robot_localization</exec_depend> 
+  <exec_depend>geometry_msgs</exec_depend> 
+  <exec_depend>numpy</exec_depend>
 
 
   <test_depend>ament_lint_auto</test_depend>

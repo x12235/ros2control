@@ -17,13 +17,18 @@ find_package(ros2_controllers REQUIRED)
 # find_package(<dependency> REQUIRED)
 
 install(
-  DIRECTORY config launch meshes rviz src urdf worlds
+  DIRECTORY config launch meshes rviz src urdf world gazebo
   DESTINATION share/${PROJECT_NAME}
 )
 install(
   PROGRAMS
   config/velocity_publisher.cpp
   src/velocity_publisher.py
+  src/tpublisher
+  src/publisher.py
+  src/hslam.py
+  src/sensor_publisher
+  src/odometry_publisher.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
