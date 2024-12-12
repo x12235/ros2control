@@ -35,13 +35,17 @@ class VelocityPublisher(Node):
         self.velocities = {
             'stop': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             'straight_forward': [-150.0, 0, 150.0, 0, -150.0, 0.0, 150.0, 0.0],
-            'straight_reverse': [10.0, -3.0, -10.0, 3.0, 10.0, -3.0, -10.0, 3.0],
-            'retract': [5.0, -5.0, -5.0, 5.0, 5.0, -5.0, -5.0, 5.0],
-            'pushdown': [-0.0, 5.0, 0.0, -5.0, 0.0, 5.0, 0.0, -5.0],
-            'left_forward': [4.0, 4.0, 3.0, 3.0, -3.0, -3.0, 3.0, 3.0],
-            'left_reverse': [-4.0, -4.0, -3.0, -3.0, 3.0, 3.0, -3.0, -3.0],
-            'right_forward': [3.0, 3.0, 4.0, 4.0, 3.0, 3.0, -3.0, -3.0],
-            'right_reverse': [-3.0, -3.0, -4.0, -4.0, -3.0, -3.0, 3.0, 3.0]
+            'straight_reverse': [15.0, -1.0, -15.0, 1.0, 15.0, -1.0, -15.0, 1.0],
+            'retract': [15.0, -10.0, -15.0, 10.0, 15.0, -10.0, -15.0, 15.0],
+            'pushdown': [-0.0, 20.0, 0.0, -20.0, 0.0, 20.0, 0.0, -20.0],
+            'left_forward': [-150.0, 0.0, 0.0, 0.0, -150.0, 0.0, 0.0, 0.0],
+            'left_reverse': [15.0, -1.0, 0.0, 0.0, -15.0, 1.0, 0.0, 0.0],
+            'left_retract': [15.0, -10.0, 0, 0, 15.0, -10.0, 0, 0],
+            'left_pushdown': [-0.0, 20.0, 0.0, 0, 0.0, 20.0, 0.0, 0],
+            'right_forward': [0, 0, 150, 0, 0, 0, -150.0, 0],
+            'right_reverse': [0, 0, -15, 1.0, 0, 0, -15.0, 1.0],
+            'right_retract': [0, 0, -15.0, 10.0, 0, 0, -15.0, 15.0],
+            'right_pushdown': [-0.0, 0, 0.0, -20.0, 0.0, 0, 0.0, -20.0],
         }
 
         # Current direction
@@ -82,7 +86,7 @@ class VelocityPublisher(Node):
 
     def update(self):
         """Publish velocities and compute odometry."""
-        # Publish velocity
+        # Publish velocityright_
         velocity_command = Float64MultiArray()
 
         if self.direction in ['straight_forward', 'straight_reverse']:
@@ -102,13 +106,31 @@ class VelocityPublisher(Node):
         elif self.direction in ['left_forward', 'left_reverse']:
             if self.toggle_state:
                 velocity_command.data = self.velocities['left_forward']
-            else:
+                self.flag = 1
+                self.toggle_state = not self.toggle_state
+            elif not self.toggle_state and self.flag == 1:
+                velocity_command.data = self.velocities['left_pushdown']
+                self.flag = 2
+            elif not self.toggle_state and self.flag == 2:
                 velocity_command.data = self.velocities['left_reverse']
+                self.flag = 0
+            elif not self.toggle_state and self.flag == 0:
+                velocity_command.data = self.velocities['left_retract']
+                self.toggle_state = not self.toggle_state
         elif self.direction in ['right_forward', 'right_reverse']:
             if self.toggle_state:
                 velocity_command.data = self.velocities['right_forward']
-            else:
+                self.flag = 1
+                self.toggle_state = not self.toggle_state
+            elif not self.toggle_state and self.flag == 1:
+                velocity_command.data = self.velocities['right_pushdown']
+                self.flag = 2
+            elif not self.toggle_state and self.flag == 2:
                 velocity_command.data = self.velocities['right_reverse']
+                self.flag = 0
+            elif not self.toggle_state and self.flag == 0:
+                velocity_command.data = self.velocities['right_retract']
+                self.toggle_state = not self.toggle_state
         else:
             velocity_command.data = self.velocities['stop']
 
