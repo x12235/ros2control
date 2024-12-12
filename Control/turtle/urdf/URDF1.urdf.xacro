@@ -627,6 +627,41 @@
       xyz="0 0 0" />
   </joint>
 
+  <!--Camera Link-->
+  <link
+    name="Camera_link">
+    <inertial>
+      <origin
+        xyz="-2.25214372452731E-05 0.103607028948444 -0.00174327710854269"
+        rpy="0 0 0" />
+      <mass
+        value="0.656382274118652" />
+      <inertia
+        ixx="0.00398589796619268"
+        ixy="6.81523498247126E-07"
+        ixz="7.5942173311683E-08"
+        iyy="0.00261594481266056"
+        iyz="4.49451871288875E-05"
+        izz="0.00597901119561345" />
+    </inertial>
+    
+    
+  </link>
+  <!--Camera_Joint-->
+   <joint
+    name="camera"
+    type="fixed">
+    <origin
+      xyz="0.0975 0 0.005"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Camera_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
   
 
 
