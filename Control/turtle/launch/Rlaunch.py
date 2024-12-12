@@ -2,15 +2,13 @@ import os
 import xacro
 from launch import LaunchDescription
 from pathlib import Path
-from launch.actions import DeclareLaunchArgument, TimerAction, IncludeLaunchDescription, SetEnvironmentVariable, ExecuteProcess, AppendEnvironmentVariable
-from launch.conditions import IfCondition, UnlessCondition
+from launch.actions import TimerAction, IncludeLaunchDescription, AppendEnvironmentVariable, SetLaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import Command, LaunchConfiguration, PythonExpression, PathJoinSubstitution, FindExecutable
-from launch_ros.actions import Node
+from launch_ros.actions import Node, SetParameter
 from launch_ros.substitutions import FindPackageShare
 from ament_index_python.packages import get_package_share_directory
-from launch_ros.parameter_descriptions import ParameterValue
-from launch.event_handlers import OnProcessExit
+
+
 
 def generate_launch_description():
     # Constants for paths to different files and folders
@@ -18,6 +16,8 @@ def generate_launch_description():
     package_name = 'turtle'
     urdf_name='URDF1.urdf.xacro'
     world_sdf_file = 'fws_robot_world.sdf'
+     
+   
 
     #Set paths to different files and packages
     urdf=os.path.join(get_package_share_directory(package_name),'urdf',urdf_name)
@@ -40,6 +40,9 @@ def generate_launch_description():
     #Robot description argument
     robot_desc = doc.toprettyxml(indent='  ')
     robot_description = {"robot_description": robot_desc}
+
+    #Set the use_sim_time parameter globally
+    set_sim_time = SetLaunchConfiguration('use_sim_time', 'true')
    
     # Nodes
     #Robot_state_publisher Node
@@ -65,7 +68,6 @@ def generate_launch_description():
         output='screen',
         arguments=["-d", rviz_config_path],
         parameters=[
-        {'use_sim_time': True},  # Ensure simulated time is used
         {'tf_buffer_size': 120.0},  # Increase transform buffer size
      ]
     )
@@ -111,7 +113,6 @@ def generate_launch_description():
         package="controller_manager",
         executable="spawner",
         arguments=["joint_vel"],
-        parameters=[{'use_sim_time': True}],
     )
 
     #Joint state broadcaster Node; Initializes Joint state broadcaster
@@ -119,7 +120,6 @@ def generate_launch_description():
         package="controller_manager",
         executable="spawner",
         arguments=["joint_state_broadcaster"],
-        parameters=[{'use_sim_time': True}],
     )
     
 
@@ -127,9 +127,10 @@ def generate_launch_description():
     bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
-        arguments=['/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan'],
+        arguments=['/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
+                   '/camera_image@sensor_msgs/msg/Image@gz.msgs.Image',
+                   ],
         output='screen',
-        parameters=[{'use_sim_time': True}],
     )
      
     #3 second delayed velocity spawner
@@ -184,6 +185,7 @@ def generate_launch_description():
     
 
     return LaunchDescription([
+        set_sim_time,
         set_env_vars_resources2,
         joint_state_publisher_node,
         robot_state_publisher_node,
@@ -194,7 +196,7 @@ def generate_launch_description():
         delayed_joint,
         bridge,
         delayed_publisher,
-        h_slam_node,
-        delayed_odom,
+        #h_slam_node,
+        #delayed_odom,
         
     ])
