@@ -2,11 +2,11 @@
 <!-- Turtle on land URDF file-->
 <robot name="URDF1" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <!-- Import turtle ros2_control description -->
-  <xacro:include filename="$(find turtle)/src/ros2_control.xacro" />
+  <!-- Import turtlebot ros2_control description -->
+  <xacro:include filename="$(find turtle_on_land_demo)/src/ros2_control.xacro" />
 
   <!-- Import turtle gazebo lidar description -->
-  <xacro:include filename="$(find turtle)/gazebo/turtle.gazebo.xacro" />
+  <xacro:include filename="$(find turtle_on_land_demo)/gazebo/turtle.gazebo.xacro" />
   
   <!--Link1; Turtle Shell bottom-->
   <link name="base_footprint">
@@ -46,7 +46,7 @@
         rpy="0 0 0" />
         <!--Mass parameter for link-->
       <mass
-        value="0.37301" />
+        value="10.97301" />
         <!--Inertial properties-->
       <inertia
         ixx="0.00031924"
@@ -63,7 +63,7 @@
         rpy="0 0 0" />
         <!--Filepath to STL visual Mesh file-->
       <geometry>
-        <mesh filename="package://turtle/meshes/visual/base_link.STL"/>
+        <mesh filename="package://turtle_on_land_demo/meshes/visual/base_link.STL"/>
       </geometry>
       <material
         name="">
@@ -80,7 +80,7 @@
         <!--Filepath to STL visual Mesh file-->
       <geometry>
         <mesh
-          filename="package://turtle/meshes/visual/base_link.STL" />
+          filename="package://turtle_on_land_demo/meshes/visual/base_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -110,7 +110,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://turtle/meshes/visual/Front_right1.STL" />
+          filename="package://turtle_on_land_demo/meshes/visual/Front_right1.STL" />
       </geometry>
       <material
         name="">
@@ -124,7 +124,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://turtle/meshes/visual/Front_right1.STL" />
+          filename="package://turtle_on_land_demo/meshes/visual/Front_right1.STL" />
       </geometry>
     </collision>
   </link>
@@ -145,8 +145,8 @@
     <limit
       lower="-0.7854"
       upper="0.7854"
-      effort="2"
-      velocity="5" />
+      effort="20"
+      velocity="999" />
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
 
@@ -173,7 +173,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://turtle/meshes/visual/Front_right2.STL" />
+          filename="package://turtle_on_land_demo/meshes/visual/Front_right2.STL" />
       </geometry>
       <material
         name="">
@@ -187,7 +187,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://turtle/meshes/visual/Front_right2.STL" />
+          filename="package://turtle_on_land_demo/meshes/visual/Front_right2.STL" />
       </geometry>
     </collision>
   </link>
@@ -206,10 +206,10 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-0.2618"
-      upper="0.2618"
-      effort="2"
-      velocity="5" />
+      lower="-0.785398"
+      upper="0.223599"
+      effort="20"
+      velocity="999" />
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
 
@@ -236,7 +236,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://turtle/meshes/visual/Back_right1.STL" />
+          filename="package://turtle_on_land_demo/meshes/visual/Back_right1.STL" />
       </geometry>
       <material
         name="">
@@ -250,7 +250,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://turtle/meshes/visual/Back_right1.STL" />
+          filename="package://turtle_on_land_demo/meshes/visual/Back_right1.STL" />
       </geometry>
     </collision>
   </link>
@@ -271,8 +271,8 @@
     <limit
       lower="-0.7854"
       upper="0.7854"
-      effort="2"
-      velocity="5" />
+      effort="10"
+      velocity="999" />
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
 
@@ -299,7 +299,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://turtle/meshes/visual/Back_right2.STL" />
+          filename="package://turtle_on_land_demo/meshes/visual/Back_right2.STL" />
       </geometry>
       <material
         name="">
@@ -313,7 +313,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://turtle/meshes/visual/Back_right2.STL" />
+          filename="package://turtle_on_land_demo/meshes/visual/Back_right2.STL" />
       </geometry>
     </collision>
   </link>
@@ -332,10 +332,10 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-0.2618"
-      upper="0.2618"
-      effort="2"
-      velocity="5" />
+      lower="-0.785398"
+      upper="0.223599"
+      effort="10"
+      velocity="999" />
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
 
@@ -362,7 +362,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://turtle/meshes/visual/Front_left1.STL" />
+          filename="package://turtle_on_land_demo/meshes/visual/Front_left1.STL" />
       </geometry>
       <material
         name="">
@@ -376,7 +376,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://turtle/meshes/visual/Front_left1.STL" />
+          filename="package://turtle_on_land_demo/meshes/visual/Front_left1.STL" />
       </geometry>
     </collision>
   </link>
@@ -397,8 +397,8 @@
     <limit
       lower="-0.6854"
       upper="0.6854"
-      effort="2"
-      velocity="5" />
+      effort="20"
+      velocity="999" />
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
 
@@ -425,7 +425,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://turtle/meshes/visual/Front_left2.STL" />
+          filename="package://turtle_on_land_demo/meshes/visual/Front_left2.STL" />
       </geometry>
       <material
         name="">
@@ -439,7 +439,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://turtle/meshes/visual/Front_left2.STL" />
+          filename="package://turtle_on_land_demo/meshes/visual/Front_left2.STL" />
       </geometry>
     </collision>
   </link>
@@ -458,10 +458,10 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-0.2618"
-      upper="0.2618"
-      effort="2"
-      velocity="5" />
+      lower="-0.223599"
+      upper="0.785398"
+      effort="20"
+      velocity="999" />
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
 
@@ -488,7 +488,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://turtle/meshes/visual/Back_left1.STL" />
+          filename="package://turtle_on_land_demo/meshes/visual/Back_left1.STL" />
       </geometry>
       <material
         name="">
@@ -502,7 +502,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://turtle/meshes/visual/Back_left1.STL" />
+          filename="package://turtle_on_land_demo/meshes/visual/Back_left1.STL" />
       </geometry>
     </collision>
   </link>
@@ -523,8 +523,8 @@
     <limit
       lower="-0.7854"
       upper="0.7854"
-      effort="2"
-      velocity="5" />
+      effort="10"
+      velocity="999" />
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
 
@@ -551,7 +551,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://turtle/meshes/visual/Back_left2.STL" />
+          filename="package://turtle_on_land_demo/meshes/visual/Back_left2.STL" />
       </geometry>
       <material
         name="">
@@ -565,7 +565,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://turtle/meshes/visual/Back_left2.STL" />
+          filename="package://turtle_on_land_demo/meshes/visual/Back_left2.STL" />
       </geometry>
     </collision>
   </link>
@@ -584,14 +584,13 @@
     <axis
       xyz="0 0 1" />
     <limit
-      lower="-0.2618"
-      upper="0.2618"
-      effort="2"
-      velocity="5" />
+      lower="-0.223599"
+      upper="0.785398"
+      effort="10"
+      velocity="999" />
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
 
-<!--Sesnor_Link-->
   <link
     name="Sensor_link">
     <inertial>
@@ -609,10 +608,8 @@
         izz="0.00597901119561345" />
     </inertial>
     
-    
   </link>
 
-<!--Sensor_Joint-->
   <joint
     name="sensor"
     type="fixed">
@@ -661,8 +658,6 @@
     <axis
       xyz="0 0 0" />
   </joint>
-
-  
 
 
 </robot>
