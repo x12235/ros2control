@@ -114,16 +114,6 @@
 
     </ros2_control>
 
-  <!-- =============== Gazebo =============== -->
-    <gazebo>
-      <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-        <parameters>$(find turtle)/config/joint_controllers.yaml</parameters>
-      </plugin>
-    </gazebo>
-
-    <plugin name="lidar" filename="libgazebo_ros_ray_sensor.so">
-      <output_type> sensor_msgs/LaserScan</output_type>
-    </plugin>
 
    
 
