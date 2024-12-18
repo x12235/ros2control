@@ -62,7 +62,11 @@ class VelocityPublisher(Node):
         min_distance = min(msg.ranges)  # Get the closest object distance
         self.get_logger().info(f'Minimum distance from object: {min_distance} meters')
 
+<<<<<<< HEAD
         if min_distance < 0.5:  # If object is within 2 meters
+=======
+        if min_distance < 2.0:  # If object is within 2 meters
+>>>>>>> 1e033910d575f7fe92138ab8b5531f3dbd53b3d7
             self.direction = 'right_forward'
         else:
             self.direction = 'straight_forward'
