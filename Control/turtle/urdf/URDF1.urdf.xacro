@@ -2,18 +2,11 @@
 <!-- Turtle on land URDF file-->
 <robot name="URDF1" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-<<<<<<< HEAD
   <!-- Import turtle ros2_control description -->
-  <xacro:include filename="$(find turtle_on_land_demo)/src/ros2_control.xacro" />
+  <xacro:include filename="$(find turtle)/src/ros2_control.xacro" />
 
   <!-- Import turtle gazebo sensor descriptions -->
-=======
-  <!-- Import turtlebot ros2_control description -->
-  <xacro:include filename="$(find turtle_on_land_demo)/src/ros2_control.xacro" />
-
-  <!-- Import turtle gazebo lidar description -->
->>>>>>> 1e033910d575f7fe92138ab8b5531f3dbd53b3d7
-  <xacro:include filename="$(find turtle_on_land_demo)/gazebo/turtle.gazebo.xacro" />
+  <xacro:include filename="$(find turtle)/gazebo/turtle.gazebo.xacro" />
   
   <!--Link1; Turtle Shell bottom-->
   <link name="base_footprint">
@@ -154,11 +147,7 @@
       upper="0.7854"
       effort="20"
       velocity="999" />
-<<<<<<< HEAD
     <dynamics damping="0.1" friction="5"/>
-=======
-    <dynamics damping="0.1" friction="0.1"/>
->>>>>>> 1e033910d575f7fe92138ab8b5531f3dbd53b3d7
   </joint>
 
   <!--Link4; Froint right flipper-->
@@ -221,11 +210,7 @@
       upper="0.223599"
       effort="20"
       velocity="999" />
-<<<<<<< HEAD
     <dynamics damping="0.1" friction="5"/>
-=======
-    <dynamics damping="0.1" friction="0.1"/>
->>>>>>> 1e033910d575f7fe92138ab8b5531f3dbd53b3d7
   </joint>
 
   <!--Link5; Back right shoulder-->
@@ -288,11 +273,7 @@
       upper="0.7854"
       effort="10"
       velocity="999" />
-<<<<<<< HEAD
     <dynamics damping="0.1" friction="5"/>
-=======
-    <dynamics damping="0.1" friction="0.1"/>
->>>>>>> 1e033910d575f7fe92138ab8b5531f3dbd53b3d7
   </joint>
 
   <!--Link6; Back right flipper-->
@@ -355,11 +336,7 @@
       upper="0.223599"
       effort="10"
       velocity="999" />
-<<<<<<< HEAD
     <dynamics damping="0.1" friction="5"/>
-=======
-    <dynamics damping="0.1" friction="0.1"/>
->>>>>>> 1e033910d575f7fe92138ab8b5531f3dbd53b3d7
   </joint>
 
   <!--Link7; Front left shoulder-->
@@ -422,11 +399,7 @@
       upper="0.6854"
       effort="20"
       velocity="999" />
-<<<<<<< HEAD
     <dynamics damping="0.1" friction="5"/>
-=======
-    <dynamics damping="0.1" friction="0.1"/>
->>>>>>> 1e033910d575f7fe92138ab8b5531f3dbd53b3d7
   </joint>
 
   <!--Link8; Front left flipper-->
@@ -489,11 +462,7 @@
       upper="0.785398"
       effort="20"
       velocity="999" />
-<<<<<<< HEAD
     <dynamics damping="0.1" friction="5"/>
-=======
-    <dynamics damping="0.1" friction="0.1"/>
->>>>>>> 1e033910d575f7fe92138ab8b5531f3dbd53b3d7
   </joint>
 
   <!--Link9; Back left shoulder-->
@@ -556,11 +525,7 @@
       upper="0.7854"
       effort="10"
       velocity="999" />
-<<<<<<< HEAD
     <dynamics damping="0.1" friction="5"/>
-=======
-    <dynamics damping="0.1" friction="0.1"/>
->>>>>>> 1e033910d575f7fe92138ab8b5531f3dbd53b3d7
   </joint>
 
   <!--Link10;Back left flipper-->
@@ -623,11 +588,7 @@
       upper="0.785398"
       effort="10"
       velocity="999" />
-<<<<<<< HEAD
     <dynamics damping="0.1" friction="5"/>
-=======
-    <dynamics damping="0.1" friction="0.1"/>
->>>>>>> 1e033910d575f7fe92138ab8b5531f3dbd53b3d7
   </joint>
 
   <link
